@@ -1,0 +1,4 @@
+[submodule "submodules/istio"]
+	path = submodules/istio
+	url = https://github.com/istio/istio
+	branch = release-1.10
