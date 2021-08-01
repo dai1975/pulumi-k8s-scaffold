@@ -1,0 +1,7 @@
+config:
+  pulumi-k8s-boilerplate:data:
+    namespace: boilerplate-dev
+    ingress:
+    - name: 'httpbin'
+      port: 8000
+

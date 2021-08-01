@@ -7,6 +7,8 @@
         "@pulumi/kubernetes": "^3.0.0",
         "@pulumi/kubernetesx": "^0.1.5",
         "@pulumi/pulumi": "^3.0.0",
-        "deepmerge": "^4.2.2"
+        "child_process": "^1.0.2",
+        "deepmerge": "^4.2.2",
+        "path": "^0.12.7"
     }
 }
