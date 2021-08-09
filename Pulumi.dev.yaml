@@ -1,7 +1,9 @@
 config:
   pulumi-k8s-boilerplate:data:
-    namespace: boilerplate-dev
+    namespace: dev-boilerplate
     ingress:
     - name: 'httpbin'
       port: 8000
+    - name: 'mongodb'
+      port: 27017
 

@@ -4,6 +4,7 @@ import * as k8s from "@pulumi/kubernetes";
 import { Istio } from './components';
 
 export interface Root {
+    //istiod: Istio.Istio.Control,
     namespace: k8s.core.v1.Namespace,
     ingress: Istio.Ingress,
 };
@@ -28,3 +29,4 @@ export const import_root = (): pulumi.Output<Root> => {
     const stack = get_stack_ref();
     return stack.getOutput('output').apply(_ => _ as Root);
 }
+

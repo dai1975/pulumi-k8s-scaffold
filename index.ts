@@ -17,6 +17,11 @@ const main = async (): Promise<lib.Root> => {
     const config = new pulumi.Config().requireObject<Config>('data');
     const kubernetes_provider = new k8s.Provider('k8s');
     await pulumi.ProviderResource.register(kubernetes_provider);
+    const opts = {
+        provider: kubernetes_provider,
+    };
+
+    const istiod = new Istio.Control('istio-control', {}, opts);
 
     const namespace = new k8s.core.v1.Namespace(
         config?.namespace,
@@ -26,7 +31,7 @@ const main = async (): Promise<lib.Root> => {
                 labels: { 'istio-injection': 'enabled' },
             },
         },
-        { provider: kubernetes_provider }
+        opts
     );
     const ingress = new Istio.Ingress(
         'istio-ingressgateway',
@@ -36,13 +41,11 @@ const main = async (): Promise<lib.Root> => {
                 ports: config.ingress,
             }
         }),
-        { provider: kubernetes_provider }
+        { ...opts, dependsOn: istiod }
     );
 
-    return {
-        //config,
-        namespace,
-        ingress,
-    }
+    return { namespace, ingress, };
 }
+
 export const output = main();
+

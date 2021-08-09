@@ -63,7 +63,9 @@ export type IngressArgs = {
 export class Ingress extends pulumi.ComponentResource {
     //readonly ingress: k8s.helm.v3.Chart;
     readonly selector: any;
-    readonly ports: pulumi.LiftedArray<IngressPort>;
+    //readonly ports: pulumi.Lifted<{ ports: IngressPort[] }>;
+    //readonly ports: pulumi.Lifted<IngressPort[]>;
+    readonly ports: pulumi.Lifted<{ [key:string]: IngressPort }>; // LiftedArray は length と [] の apply を同時に扱えなくて for 走査できなかった
 
     constructor(name:string, args_: pulumi.Input<IngressArgs>, opts?: pulumi.ComponentResourceOptions) {
         super(Const.component_name('istio', 'Ingress'), name, {}, opts);
@@ -93,13 +95,15 @@ export class Ingress extends pulumi.ComponentResource {
                     }
                 })
                 : []
-            const ports = base_ports.concat(add_ports);
+            const ports_array = base_ports.concat(add_ports);
+            const ports_dict: {[key:string]:IngressPort} = {};
+            ports_array.forEach(_ => ports_dict[_.name] = _); //reduce だと TS7053 エラーが出ちゃうな
 
             const values = {
                 gateways: {
                     'istio-ingressgateway': {
                         labels: selector,
-                        ports: ports,
+                        ports: ports_array,
                     }
                 }
             };
@@ -109,7 +113,7 @@ export class Ingress extends pulumi.ComponentResource {
                 values: values,
             }, { parent: this });
 
-            return { selector, ports, ingress };
+            return { selector, ports: ports_dict, ingress };
         });
         this.selector = r.selector;
         this.ports = r.ports;
