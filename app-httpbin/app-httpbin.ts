@@ -6,8 +6,12 @@ import * as lib from '../lib';
 import { Istio } from '../components';
 //import { DestinationRule } from "./crds/istio/networking/v1alpha3";
 
+type Config = {
+    name?: string,
+}
+
 export const main = async () => {
-    const config = new pulumi.Config();
+    const config = new pulumi.Config().requireObject<Config>('data');
     const stack = pulumi.getStack();
     const kubernetes_provider = new k8s.Provider('istio-control');
     await pulumi.ProviderResource.register(kubernetes_provider);
@@ -17,7 +21,7 @@ export const main = async () => {
     const p = lib.import_root().apply((_:lib.Root) => {
         const port = (_.ingress.ports['httpbin']) ? _.ingress.ports['httpbin'].port : undefined;
         return {
-            name: config.get('name') || `${stack}-httpbin`,
+            name: config.name || `${stack}-httpbin`,
             namespace:  _.namespace,
             ingress_selector: _.ingress.selector,
             port: port,

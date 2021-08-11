@@ -1,0 +1,7 @@
+config:
+  pulumi-k8s-boilerplate--app-mongodb:data:
+    rootPassword: 'mongodevpw'
+    username: 'dev'
+    password: 'devpw'
+    database: 'dev'
+    
