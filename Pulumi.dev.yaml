@@ -6,4 +6,5 @@ config:
       port: 8000
     - name: 'mongodb'
       port: 27017
-
+    - name: 'pgsql'
+      port: 5432

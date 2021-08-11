@@ -1,3 +1,4 @@
+import * as deepmerge from 'deepmerge';
 import * as pulumi from "@pulumi/pulumi";
 import * as k8s from "@pulumi/kubernetes";
 import * as kx from "@pulumi/kubernetesx";
@@ -12,7 +13,6 @@ export type MongodbArgs = {
     values?: any,
 };
 export class Mongodb extends pulumi.ComponentResource {
-    //readonly helm: pulumi.Lifted<k8s.helm.v3.Chart>;
     readonly helm: k8s.helm.v3.Chart;
 
     constructor(name:string, args: MongodbArgs, opts?: pulumi.ComponentResourceOptions) {
@@ -24,7 +24,7 @@ export class Mongodb extends pulumi.ComponentResource {
             chart: "mongodb",
             version: "10.21.2",
             namespace: args.namespace,
-            values: {
+            values: deepmerge({
                 global: {
                     namespaceOverride: args.namespace,
                 },
@@ -45,8 +45,7 @@ export class Mongodb extends pulumi.ComponentResource {
                 persistence: {
                     enabled: true,
                 },
-                ...add_values,
-            }
+            }, add_values)
         }, opts);
         //console.log(helm);
         this.helm = helm;
