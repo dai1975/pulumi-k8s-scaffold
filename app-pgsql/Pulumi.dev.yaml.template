@@ -1,0 +1,5 @@
+config:
+  pulumi-k8s-scaffold--app-pgsql:data:
+    username: 'dev'
+    password: 'devpw'
+    database: 'dev'

@@ -1,0 +1,11 @@
+config:
+  pulumi-k8s-scaffold--app-argo-workflows:data:
+    serviceAccount: 'dev-argo-workflows-workflow'
+    chart:
+      version: '0.2.13'
+    pgsql:
+      host: 'dev-pgsql'
+      username: 'dev'
+      password: 'devpw'
+      database: 'dev'
+      table: 'dev-argo-workflows'

@@ -1,0 +1,12 @@
+config:
+  pulumi-k8s-scaffold:data:
+    namespace: dev-pulumi-k8s-scaffold
+    ingress:
+    - name: 'httpbin'
+      port: 8000
+    - name: 'mongodb'
+      port: 27017
+    - name: 'pgsql'
+      port: 5432
+    - name: 'argo-workflow'
+      port: 2746

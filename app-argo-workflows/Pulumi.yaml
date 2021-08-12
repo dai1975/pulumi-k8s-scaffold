@@ -1,0 +1,3 @@
+name: pulumi-k8s-scaffold--app-argo-workflows
+runtime: nodejs
+description: A base construction for pulumi k8s projects.
