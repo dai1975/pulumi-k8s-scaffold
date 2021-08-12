@@ -43,6 +43,9 @@ export class Control extends pulumi.ComponentResource {
             values: {
                 global: {
                     jwtPolicy: "first-party-jwt",
+                    proxy: {
+                        holdApplicationUntilProxyStarts: true
+                    }
                 }
             }
         }, { parent: this.namespace, dependsOn: this.base });

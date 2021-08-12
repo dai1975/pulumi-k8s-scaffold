@@ -18,7 +18,7 @@ interface Config {
 export const main = async () => {
     const config = new pulumi.Config().requireObject<Config>('data');
     const stack = pulumi.getStack();
-    const kubernetes_provider = new k8s.Provider('istio-control');
+    const kubernetes_provider = new k8s.Provider('mongodb');
     await pulumi.ProviderResource.register(kubernetes_provider);
     const opts = {
         provider: kubernetes_provider,

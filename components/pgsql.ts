@@ -4,8 +4,7 @@ import * as k8s from "@pulumi/kubernetes";
 import * as kx from "@pulumi/kubernetesx";
 import * as Const from './const';
 
-type PgsqlArgs = {
-    name?: pulumi.Input<string>,
+export type PgsqlArgs = {
     namespace: pulumi.Input<string>,
     acl: {
         username: pulumi.Input<string>,
@@ -14,6 +13,7 @@ type PgsqlArgs = {
     },
     values?: any,
 };
+
 export class Pgsql extends pulumi.ComponentResource {
     readonly helm: k8s.helm.v3.Chart;
 

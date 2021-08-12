@@ -3,45 +3,59 @@ import * as k8s from "@pulumi/kubernetes";
 import * as kx from "@pulumi/kubernetesx";
 
 import * as lib from '../lib';
-import { Istio, Pgsql } from '../components';
+import { Istio, ArgoWorkflows } from '../components';
 //import { DestinationRule } from "./crds/istio/networking/v1alpha3";
 
 
 interface Config {
     name?: string,
-    username: string,
-    password: string,
-    database: string,
+    serviceAccount: string,
+    chart: {
+        version?: string,
+    },
+    pgsql: {
+        host: string,
+        username: string,
+        password: string,
+        database: string,
+        table: string,
+    }
 };
 
 export const main = async () => {
     const config = new pulumi.Config().requireObject<Config>('data');
     const stack = pulumi.getStack();
-    const kubernetes_provider = new k8s.Provider('pgsql');
+    const kubernetes_provider = new k8s.Provider('argo-workflows');
     await pulumi.ProviderResource.register(kubernetes_provider);
     const opts = {
         provider: kubernetes_provider,
     };
     const p = lib.import_root().apply((_:lib.Root) => {
-        const port = (_.ingress.ports['pgsql']) ? _.ingress.ports['pgsql'].port : undefined;
+        const port = (_.ingress.ports['argo-workflows']) ? _.ingress.ports['argo-workflows'].port : 2746;
         return {
-            name: config.name || `${stack}-pgsql`,
+            name: config.name || `${stack}-argo-workflows`,
             namespace: _.namespace,
             ingress_selector: _.ingress.selector,
             port: port,
         };
     });
 
-    const pgsql = pulumi.all([p]).apply(([p]) => new Pgsql.Pgsql(p.name, {
+    const argo_workflows = pulumi.all([p]).apply(([p]) => new ArgoWorkflows.ArgoWorkflows(p.name, {
         namespace:  p.namespace.metadata.name,
-        acl: {
-            username: config.username,
-            password: config.password,
-            database: config.database,
+        serviceAccount: config.serviceAccount,
+        chart: {
+            version: config.chart.version,
+            values: {
+                fullnameOverride: p.name,
+            }
         },
-        values: {
-            fullnameOverride: p.name,
-        }
+        pgsql: {
+            host:     config.pgsql.host,
+            username: config.pgsql.username,
+            password: config.pgsql.password,
+            database: config.pgsql.database,
+            table:    config.pgsql.table,
+        },
     }, opts));
 
     const gw = pulumi.all([p]).apply(([p]) => new Istio.networking.v1beta1.Gateway(p.name, {
@@ -54,9 +68,9 @@ export const main = async () => {
             servers: [ {
                 hosts: [ '*' ],
                 port: {
-                    name: `tcp-${p.name}`,
+                    name: `http-${p.name}`,
                     number: p.port,
-                    protocol: 'TCP',
+                    protocol: 'HTTP',
                 }
             } ],
         }
@@ -70,20 +84,19 @@ export const main = async () => {
         spec: {
             hosts: [ '*' ],
             gateways: gw.metadata.apply(_=> [_.name]),
-            tcp: [{
+            http: [{
                 match: [ { port: p.port } ],
                 route: [{
                     destination: {
-                        host: p.name,
+                        host: `${p.name}-server`,
                         port: {
-                            number: 5432,
+                            number: 2746,
                         }
                     }
                 }]
             }]
         }
     }, opts));
+
 };
-
-
 

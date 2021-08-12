@@ -8,3 +8,5 @@ config:
       port: 27017
     - name: 'pgsql'
       port: 5432
+    - name: 'argo-workflow'
+      port: 2746
