@@ -1,3 +1,3 @@
 #!/bin/sh
 
-curl http://pulumi-boilerplate:8000/get
+curl http://k8s:8000/get

@@ -11,5 +11,5 @@ printjson(db.getUsers());
 printjson(db.getRoles({showBuiltinRoles:false}));
 EOF
 
-mongosh --norc mongodb://pulumi-boilerplate:27017 -u $user -p $pass /tmp/mongotest.js
+mongosh --norc mongodb://k8s:27017 -u $user -p $pass /tmp/mongotest.js
 

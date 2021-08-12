@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# firefox http://pulumi-boilerplate:2746/
+# firefox http://k8s:2746/
 
 dir=$(dirname $0)
 sa=$(awk '$1=="serviceAccount:" {print $2}' $dir/Pulumi.dev.yaml | tr -d "'\" ")

@@ -1,5 +1,5 @@
 config:
-  pulumi-k8s-boilerplate--app-mongodb:data:
+  pulumi-k8s-scaffold--app-mongodb:data:
     rootPassword: 'mongodevpw'
     username: 'dev'
     password: 'devpw'

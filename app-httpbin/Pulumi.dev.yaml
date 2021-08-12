@@ -1,5 +1,0 @@
-config:
-  pulumi-k8s-boilerplate--app-httpbin:data:
-    dummy: true
-
-

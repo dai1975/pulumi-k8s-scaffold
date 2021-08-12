@@ -1,4 +1,4 @@
-# pulumi-k8s-boilerplate
+# pulumi-k8s-scaffold
 
 # Requirements
 
@@ -16,9 +16,18 @@
   unpack tar.gz then copy crd2pulumi file to dir which is in $PATH
 
 
+## git submodule
+
+``` shell
+$ git submodule init
+$ git submodule update
+```
+
 # Kubernetes
 
 ## microk8s
+
+I use microk8s. If you try to use other runtime, you can run on it.
 
 * install & setup microk8s:
 
@@ -40,9 +49,8 @@ Select metallb's IP addresses appropriate for your system.
 2. run `pulumi login`
 
 ## create project
-NOTE: This boilerplate has already done the step.
 
-If you manually create project:
+This repostory is already setup pulumi project, but if you want to manually create project:
 
 ``` shell
 $ mkdir projdir && cd projdir
@@ -51,16 +59,25 @@ $ pulumi new kubernetes-typescript
 
 see https://www.pulumi.com/docs/get-started/kubernetes/create-project/
 
+---
+# Deploy
+
+This scaffold adopt a design of `Micro-Stacks` in https://www.pulumi.com/docs/guides/organizing-projects-stacks/
+Root directory and each app-* dir is a stack directory.
+
+You run below process for each dirs.
+
 ## create stack
-This boilerplate uses single monothilic stack "dev".
 
 ``` shell
 $ pulumi stack init dev
-$ pulumi stack ls
 ```
 
-## develop
-see `src/main.ts` and related source files.
+settings file is already exists. copy it.
+
+``` shell
+$ cp Pulumi.dev.yaml.template Pulumi.dev.yaml
+```
 
 ## deploy
 
@@ -68,3 +85,8 @@ see `src/main.ts` and related source files.
 $ pulumi up
 ```
 
+## test
+
+``` shell
+$ ./test.sh
+```
